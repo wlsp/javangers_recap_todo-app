@@ -1,18 +1,16 @@
 package wlsp.tech.javangers_recap_todoapp.controller;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 import wlsp.tech.javangers_recap_todoapp.model.Enum.TodoStatus;
 import wlsp.tech.javangers_recap_todoapp.model.Todo;
 import wlsp.tech.javangers_recap_todoapp.model.TodoNotFoundException;
 import wlsp.tech.javangers_recap_todoapp.model.dto.TodoDto;
-import wlsp.tech.javangers_recap_todoapp.service.IdService;
 import wlsp.tech.javangers_recap_todoapp.service.TodoService;
 
+import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/todo")
@@ -48,9 +46,9 @@ public class TodoController {
   }
 
   @PutMapping("/{id}")
-  public ResponseEntity<Todo> updateTodo(@PathVariable String id, @RequestBody Todo todo) throws TodoNotFoundException {
+  public ResponseEntity<Todo> updateTodo(@PathVariable String id, @RequestBody Todo todo)
+          throws TodoNotFoundException {
     Todo todoRes;
-
     try {
       todoRes = todoService.updateTodo(id, todo);
       return ResponseEntity.status(HttpStatus.OK).body(todoRes);
@@ -64,8 +62,10 @@ public class TodoController {
     todoService.deleteTodo(id);
   }
 
+  //@TODO fix methode
   @GetMapping("/search")
-  public ResponseEntity<List<Todo>> getTodosByStatus(TodoStatus status) {
-    return ResponseEntity.status(HttpStatus.OK).body(todoService.getTodosByStatus(status));
+  public ResponseEntity<List<Todo>> getTodosByStatus(@RequestParam(value = "status") TodoStatus status) {
+    return ResponseEntity.ok(todoService.getAlTodosByStatus(status));
   }
+
 }

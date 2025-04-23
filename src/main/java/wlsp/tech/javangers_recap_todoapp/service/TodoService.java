@@ -54,7 +54,7 @@ public class TodoService {
     todo.ifPresent(todoRepository::delete);
   }
 
-  public List<Todo> getTodosByStatus(TodoStatus status){
+  public List<Todo> getAlTodosByStatus(TodoStatus status) {
     return todoRepository.findTodosByStatusIgnoreCase(status);
   }
 
