@@ -3,7 +3,7 @@ package wlsp.tech.javangers_recap_todoapp.controller;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
-import wlsp.tech.javangers_recap_todoapp.model.Enum.TodoStatus;
+//import wlsp.tech.javangers_recap_todoapp.model.Enum.TodoStatus;
 import wlsp.tech.javangers_recap_todoapp.model.Todo;
 import wlsp.tech.javangers_recap_todoapp.model.TodoNotFoundException;
 import wlsp.tech.javangers_recap_todoapp.model.dto.TodoDto;
