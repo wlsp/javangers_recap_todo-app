@@ -9,7 +9,6 @@ import wlsp.tech.javangers_recap_todoapp.model.TodoNotFoundException;
 import wlsp.tech.javangers_recap_todoapp.model.dto.TodoDto;
 import wlsp.tech.javangers_recap_todoapp.service.TodoService;
 
-import java.util.Collections;
 import java.util.List;
 
 @RestController
