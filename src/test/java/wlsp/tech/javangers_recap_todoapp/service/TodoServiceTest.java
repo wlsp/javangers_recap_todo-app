@@ -71,10 +71,6 @@ class TodoServiceTest {
   }
 
   @Test
-  void updateTodo() {
-  }
-
-  @Test
   void deleteTodo_shouldCallDelete_whenTodoExists() {
     // GIVEN
     Todo todo = new Todo("1", "Test-Todo", TodoStatus.OPEN);
@@ -89,7 +85,20 @@ class TodoServiceTest {
   }
 
   @Test
-  void searchTodosByStatus_shouldReturnAListWithTodosByStatus_whenCalled() {
+  void searchTodosByStatus_withValidLowercaseStatus_shouldReturnFilteredTodos() {
+    // GIVEN
+    TodoService service = new TodoService(mockTodoRepository, mockIdService);
+    Todo todo1 = new Todo("1", "Task 1", TodoStatus.DONE);
+    List<Todo> expected = List.of(todo1);
 
+    when(mockTodoRepository.findTodosByStatusIgnoreCase(TodoStatus.DONE)).thenReturn(expected);
+
+    // WHEN
+    List<Todo> actual = service.getAlTodosByStatus(TodoStatus.DONE);
+
+    // THEN
+    assertEquals(expected, actual);
+    verify(mockTodoRepository).findTodosByStatusIgnoreCase(TodoStatus.DONE);
   }
+
 }

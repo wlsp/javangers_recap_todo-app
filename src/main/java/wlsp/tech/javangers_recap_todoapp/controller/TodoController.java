@@ -62,9 +62,9 @@ public class TodoController {
   }
 
   //@TODO fix methode
-  @GetMapping("/search")
-  public ResponseEntity<List<Todo>> getTodosByStatus(@RequestParam(value = "status") TodoStatus status) {
-    return ResponseEntity.ok(todoService.getAlTodosByStatus(status));
-  }
+//  @GetMapping("/search")
+//  public ResponseEntity<List<Todo>> getTodosByStatus(@RequestParam(value = "status") TodoStatus status) {
+//    return ResponseEntity.ok(todoService.getAlTodosByStatus(status));
+//  }
 
 }

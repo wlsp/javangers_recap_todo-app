@@ -6,14 +6,15 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+
 import wlsp.tech.javangers_recap_todoapp.model.Enum.TodoStatus;
 import wlsp.tech.javangers_recap_todoapp.model.Todo;
 import wlsp.tech.javangers_recap_todoapp.repository.TodoRepository;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -86,5 +87,19 @@ private TodoRepository todoRepository;
             )
             .andExpect(jsonPath("$.id").isNotEmpty());
   }
+
+//  @Test
+//  void searchTodosByStatus_withValidLowercaseStatus_shouldReturnTodos() throws Exception {
+//    Todo todo1 = new Todo("1", "Task 1", TodoStatus.DONE);
+//    Todo todo2 = new Todo("2", "Task 2", TodoStatus.DONE);
+//
+//    todoRepository.saveAll(List.of(todo1, todo2));
+//    mockMvc.perform(get("/search")
+//                    .param("status", "done"))
+//            .andExpect(status().isOk())
+//            .andExpect(jsonPath("$", hasSize(2))) // 2 DONE-Todos
+//            .andExpect((ResultMatcher) jsonPath("$[0].status", is("DONE")))
+//            .andExpect((ResultMatcher) jsonPath("$[1].status", is("DONE")));
+//  }
 
 }
