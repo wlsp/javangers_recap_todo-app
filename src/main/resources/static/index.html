@@ -1,0 +1,108 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"/><link rel="icon" href="/favicon.ico"/><meta name="viewport" content="width=device-width,initial-scale=1"/><meta name="theme-color" content="#000000"/><meta name="description" content="A simple a kanabn app"/><link rel="apple-touch-icon" href="/logo192.png"/><link rel="manifest" href="/manifest.json"/><title>Super Kanban</title><script defer="defer" src="/static/js/main.6d85980d.js"></script><style>
+
+    nav {
+        background-color: white;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+        padding-bottom: 1rem;
+        z-index: 1000;
+        a {
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            padding: 6px 8px !important;
+
+            &:not(.active) {
+                background-color: #ffe4ec;
+                color: hotpink;
+                border: 2px solid hotpink;
+                transition: all 0.3s ease;
+
+                &:hover {
+                    background-color: hotpink;
+                    color: white;
+                }
+            }
+        }
+    }
+
+    h1 {
+        font-size: 1rem;
+    }
+    h2, h3 {
+        text-align: center;
+    }
+
+    main {
+        padding-top: 2rem !important;
+
+        > section {
+            padding: 1.5rem;
+            border-radius: 1rem;
+            margin-bottom: 1rem;
+
+            &:nth-of-type(1) {
+                background-color: #fff5f9;
+            }
+
+            &:nth-of-type(2) {
+                background-color: #fffbe6;
+            }
+
+            &:nth-of-type(3) {
+                background-color: #e6fff2;
+            }
+        }
+
+
+    }
+
+    li > section {
+        background-color: whitesmoke;
+    }
+
+    form {
+        display: flex;
+        gap: 0.75rem;
+        align-items: center;
+
+        input[type="text"],
+        button {
+            padding: 0.75rem 1rem;
+            font-size: 1rem;
+            border-radius: 0.75rem;
+            height: 3rem;
+        }
+
+        input[type="text"] {
+            flex: 1;
+            border: 2px solid #ddd;
+            transition: border-color 0.3s, box-shadow 0.3s;
+
+            &:focus {
+                border-color: hotpink;
+                box-shadow: 0 0 0 4px rgba(255, 105, 180, 0.2);
+                outline: none;
+            }
+        }
+
+        button {
+            background-color: hotpink;
+            color: white;
+            padding: 0.75rem 1.25rem;
+            border: none;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.3s;
+
+            &:hover {
+                background-color: #e60073;
+            }
+
+            &:active {
+                transform: scale(0.97);
+            }
+        }
+    }
+
+
+</style></head><body><noscript>You need to enable JavaScript to run this app.</noscript><div id="root"></div></body></html>
