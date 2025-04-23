@@ -87,6 +87,27 @@ private TodoRepository todoRepository;
             )
             .andExpect(jsonPath("$.id").isNotEmpty());
   }
+  @Test
+  void updateTodo() throws Exception {
+    Todo todo = new Todo("id", "Test", TodoStatus.OPEN);
+    todoRepository.save(todo);
+
+    mockMvc.perform(put("/api/todo/" + todo.id())
+            .contentType(MediaType.APPLICATION_JSON)
+            .content("""
+{
+                                "description": "Test",
+                                "status": "OPEN"
+                              }""")).andExpect(status().isOk())
+            .andExpect(content().json("""
+
+                    
+{
+                                "description": "Test",
+                                "status": "OPEN"
+                              }
+"""));
+  }
 
 //  @Test
 //  void searchTodosByStatus_withValidLowercaseStatus_shouldReturnTodos() throws Exception {

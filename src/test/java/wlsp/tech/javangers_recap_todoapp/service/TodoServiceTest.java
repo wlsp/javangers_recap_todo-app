@@ -53,6 +53,31 @@ class TodoServiceTest {
   }
 
   @Test
+  void getIdTodoById_shouldThrowException_whenCalledWithInvalidId() throws TodoNotFoundException {
+    TodoService todoService = new TodoService(mockTodoRepository, mockIdService);
+    when(mockTodoRepository.findById("1")).thenReturn(Optional.empty());
+    try {
+      todoService.getTodoById("1");
+      fail();
+    } catch (TodoNotFoundException e) {
+      assertTrue(true);
+    }
+  }
+
+  @Test
+  void updateTodo() {
+    TodoService todoService = new TodoService(mockTodoRepository, mockIdService);
+    Todo todo = new Todo("1", "Todo", TodoStatus.OPEN);
+
+    when(mockTodoRepository.findById("1")).thenReturn(Optional.of(todo));
+
+    Todo actual = todoService.updateTodo("1", todo);
+
+    assertEquals(todo, actual);
+    verify(mockTodoRepository).save(todo);
+  }
+
+  @Test
   void addTodo_shouldReturnTodo_whenCalledWithDto() {
     // GIVEN
     TodoService service = new TodoService(mockTodoRepository, mockIdService);
