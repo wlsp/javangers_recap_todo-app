@@ -9,5 +9,5 @@ import java.util.List;
 
 @Repository
 public interface TodoRepository extends MongoRepository<Todo, String> {
-  List<Todo> findTodosByStatusIgnoreCase(TodoStatus status);
+  List<Todo> findAllByStatus(TodoStatus status);
 }

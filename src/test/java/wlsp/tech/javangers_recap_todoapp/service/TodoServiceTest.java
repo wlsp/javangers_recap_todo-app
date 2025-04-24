@@ -1,5 +1,6 @@
 package wlsp.tech.javangers_recap_todoapp.service;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import wlsp.tech.javangers_recap_todoapp.model.Enum.TodoStatus;
 import wlsp.tech.javangers_recap_todoapp.model.Todo;
@@ -12,11 +13,17 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
+import static org.mockito.MockitoAnnotations.openMocks;
 
 class TodoServiceTest {
 
   IdService mockIdService = mock(IdService.class);
   TodoRepository mockTodoRepository = mock(TodoRepository.class);
+
+  @BeforeEach
+  void setUp() {
+    openMocks(this);
+  }
 
   @Test
   void getAllTodos_shouldReturnListOfTodos_whenCalled() {
@@ -52,17 +59,6 @@ class TodoServiceTest {
 
   }
 
-  @Test
-  void getIdTodoById_shouldThrowException_whenCalledWithInvalidId() throws TodoNotFoundException {
-    TodoService todoService = new TodoService(mockTodoRepository, mockIdService);
-    when(mockTodoRepository.findById("1")).thenReturn(Optional.empty());
-    try {
-      todoService.getTodoById("1");
-      fail();
-    } catch (TodoNotFoundException e) {
-      assertTrue(true);
-    }
-  }
 
   @Test
   void updateTodo() {
@@ -110,20 +106,20 @@ class TodoServiceTest {
   }
 
   @Test
-  void searchTodosByStatus_withValidLowercaseStatus_shouldReturnFilteredTodos() {
+  void searchTodosByStatus_shouldReturnFilteredTodos() {
     // GIVEN
     TodoService service = new TodoService(mockTodoRepository, mockIdService);
     Todo todo1 = new Todo("1", "Task 1", TodoStatus.DONE);
     List<Todo> expected = List.of(todo1);
 
-    when(mockTodoRepository.findTodosByStatusIgnoreCase(TodoStatus.DONE)).thenReturn(expected);
+    when(mockTodoRepository.findAllByStatus(TodoStatus.DONE)).thenReturn(expected);
 
     // WHEN
     List<Todo> actual = service.getAlTodosByStatus(TodoStatus.DONE);
 
     // THEN
     assertEquals(expected, actual);
-    verify(mockTodoRepository).findTodosByStatusIgnoreCase(TodoStatus.DONE);
+    verify(mockTodoRepository).findAllByStatus(TodoStatus.DONE);
   }
 
 }

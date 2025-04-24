@@ -55,7 +55,7 @@ public class TodoService {
   }
 
   public List<Todo> getAlTodosByStatus(TodoStatus status) {
-    return todoRepository.findTodosByStatusIgnoreCase(status);
+    return todoRepository.findAllByStatus(status);
   }
 
 }

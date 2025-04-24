@@ -1,5 +1,6 @@
 package wlsp.tech.javangers_recap_todoapp.controller;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -24,6 +25,11 @@ private MockMvc mockMvc;
 
 @Autowired
 private TodoRepository todoRepository;
+
+  @BeforeEach
+  void setUp() {
+    todoRepository.deleteAll();
+  }
 
   @Test
   void getAllTodos_shouldReturnListWIthTodos_whenCalled() throws Exception {
