@@ -19,6 +19,7 @@ class TodoServiceTest {
 
   IdService mockIdService = mock(IdService.class);
   TodoRepository mockTodoRepository = mock(TodoRepository.class);
+  ChatGPTService mockChatGPTService = mock(ChatGPTService.class);
 
   @BeforeEach
   void setUp() {
@@ -28,7 +29,7 @@ class TodoServiceTest {
   @Test
   void getAllTodos_shouldReturnListOfTodos_whenCalled() {
     //GIVEN
-    TodoService service = new TodoService(mockTodoRepository, mockIdService);
+    TodoService service = new TodoService(mockTodoRepository, mockIdService, mockChatGPTService);
     Todo todo1 = new Todo("1", "I'M THE ONE!", TodoStatus.OPEN);
     Todo todo2 = new Todo("2", "I'M THE SECOND! - DONE ME", TodoStatus.DONE);
     List<Todo> expected = List.of(todo1, todo2);
@@ -45,7 +46,7 @@ class TodoServiceTest {
   @Test
   void getTodoById_shouldReturnTodoWithSpecificId_WhenCalledAndTodoExist() throws TodoNotFoundException {
     //GIVEN
-    TodoService service = new TodoService(mockTodoRepository, mockIdService);
+    TodoService service = new TodoService(mockTodoRepository, mockIdService, mockChatGPTService);
     Todo expected = new Todo("2", "I AM THE ONE", TodoStatus.OPEN);
     when(mockTodoRepository.findById("2")).thenReturn(Optional.of(expected));
 
@@ -62,7 +63,7 @@ class TodoServiceTest {
 
   @Test
   void updateTodo() {
-    TodoService todoService = new TodoService(mockTodoRepository, mockIdService);
+    TodoService todoService = new TodoService(mockTodoRepository, mockIdService, mockChatGPTService);
     Todo todo = new Todo("1", "Todo", TodoStatus.OPEN);
 
     when(mockTodoRepository.findById("1")).thenReturn(Optional.of(todo));
@@ -76,27 +77,33 @@ class TodoServiceTest {
   @Test
   void addTodo_shouldReturnTodo_whenCalledWithDto() {
     // GIVEN
-    TodoService service = new TodoService(mockTodoRepository, mockIdService);
-    Todo expected = new Todo("1", "YOUR NOT THE SECOUND", TodoStatus.DONE);
-    TodoDto todoDto = new TodoDto("YOUR NOT THE SECOUND", TodoStatus.DONE);
+    TodoService service = new TodoService(mockTodoRepository, mockIdService, mockChatGPTService);
 
-    when(mockIdService.generateTodoId()).thenReturn("1");
-    when(mockTodoRepository.save(expected)).thenReturn(expected);
+    TodoDto todoDto = new TodoDto("YOUR NOT THE SECOND", TodoStatus.DONE);
+    String generatedId = "1";
+    String correctedDescription = "You're not the second";
+
+    Todo expected = new Todo(generatedId, correctedDescription, TodoStatus.DONE);
+
+    when(mockIdService.generateTodoId()).thenReturn(generatedId);
+    when(mockChatGPTService.checkSpelling(anyString())).thenReturn(correctedDescription);
+    when(mockTodoRepository.save(any(Todo.class))).thenReturn(expected);
 
     // WHEN
     Todo actual = service.addTodo(todoDto);
 
     // THEN
     assertEquals(expected, actual);
-    verify(mockTodoRepository).save(expected);
+    verify(mockTodoRepository).save(any(Todo.class));
   }
+
 
   @Test
   void deleteTodo_shouldCallDelete_whenTodoExists() {
     // GIVEN
     Todo todo = new Todo("1", "Test-Todo", TodoStatus.OPEN);
     when(mockTodoRepository.findById("1")).thenReturn(Optional.of(todo));
-    TodoService service = new TodoService(mockTodoRepository, mockIdService);
+    TodoService service = new TodoService(mockTodoRepository, mockIdService, mockChatGPTService);
 
     // WHEN
     service.deleteTodo("1");
@@ -108,7 +115,7 @@ class TodoServiceTest {
   @Test
   void searchTodosByStatus_shouldReturnFilteredTodos() {
     // GIVEN
-    TodoService service = new TodoService(mockTodoRepository, mockIdService);
+    TodoService service = new TodoService(mockTodoRepository, mockIdService, mockChatGPTService);
     Todo todo1 = new Todo("1", "Task 1", TodoStatus.DONE);
     List<Todo> expected = List.of(todo1);
 

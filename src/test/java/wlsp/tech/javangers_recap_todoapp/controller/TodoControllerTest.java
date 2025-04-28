@@ -6,33 +6,33 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
-import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.web.servlet.MockMvc;
 
-import static net.bytebuddy.matcher.ElementMatchers.is;
-import static org.hamcrest.Matchers.hasSize;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 
-import org.springframework.test.web.servlet.ResultMatcher;
 import wlsp.tech.javangers_recap_todoapp.model.Enum.TodoStatus;
 import wlsp.tech.javangers_recap_todoapp.model.Todo;
 import wlsp.tech.javangers_recap_todoapp.repository.TodoRepository;
+import wlsp.tech.javangers_recap_todoapp.service.ChatGPTService;
 
-import java.util.List;
-
-
-@SpringBootTest
+@SpringBootTest(properties = {
+        "OPEN_AI_URI=https://dummy-openai-url.com",
+        "OPEN_AI_KEY=dummy-key"
+})
 @AutoConfigureMockMvc
-@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 class TodoControllerTest {
+  @Autowired
+  private MockMvc mockMvc;
 
-@Autowired
-private MockMvc mockMvc;
+  @Autowired
+  private TodoRepository todoRepository;
 
-@Autowired
-private TodoRepository todoRepository;
+  @BeforeEach
+  void setUp() {
+    todoRepository.deleteAll();
+  }
 
   @Test
   void getAllTodos_shouldReturnListWIthTodos_whenCalled() throws Exception {
@@ -107,6 +107,7 @@ private TodoRepository todoRepository;
             )
             .andExpect(jsonPath("$.id").isNotEmpty());
   }
+
   @Test
   void updateTodo() throws Exception {
     Todo todo = new Todo("id", "Test", TodoStatus.OPEN);
