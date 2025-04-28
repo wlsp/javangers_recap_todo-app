@@ -17,6 +17,7 @@ public class TodoService {
 
   private final TodoRepository todoRepository;
   private final IdService idService;
+  private final ChatGPTService chatGPTService;
 
   public List<Todo> getAllTodos(){
     return todoRepository.findAll();
@@ -30,9 +31,12 @@ public class TodoService {
     if(todo.description().isEmpty()) {
       return null;
     }
+
+    String correctedDescription = String.valueOf(chatGPTService.checkSpelling(todo.description()));
+
     Todo newTodo = new Todo(
             idService.generateTodoId(),
-            todo.description(),
+            correctedDescription,
             todo.status()
     );
     return todoRepository.save(newTodo);
