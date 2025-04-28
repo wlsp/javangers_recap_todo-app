@@ -4,7 +4,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import wlsp.tech.javangers_recap_todoapp.model.Enum.TodoStatus;
 import wlsp.tech.javangers_recap_todoapp.model.Todo;
-import wlsp.tech.javangers_recap_todoapp.model.TodoNotFoundException;
+import wlsp.tech.javangers_recap_todoapp.exceptions.TodoNotFoundException;
 import wlsp.tech.javangers_recap_todoapp.model.dto.TodoDto;
 import wlsp.tech.javangers_recap_todoapp.repository.TodoRepository;
 

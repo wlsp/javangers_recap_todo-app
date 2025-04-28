@@ -5,7 +5,7 @@ import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 import wlsp.tech.javangers_recap_todoapp.model.Enum.TodoStatus;
 import wlsp.tech.javangers_recap_todoapp.model.Todo;
-import wlsp.tech.javangers_recap_todoapp.model.TodoNotFoundException;
+import wlsp.tech.javangers_recap_todoapp.exceptions.TodoNotFoundException;
 import wlsp.tech.javangers_recap_todoapp.model.dto.TodoDto;
 import wlsp.tech.javangers_recap_todoapp.service.TodoService;
 
@@ -24,7 +24,7 @@ public class TodoController {
   }
 
   @GetMapping("/{id}")
-  public ResponseEntity<Todo> getTodoById(@PathVariable String id) throws TodoNotFoundException {
+  public ResponseEntity<Todo> getTodoById(@PathVariable String id) {
     return ResponseEntity.status(HttpStatus.OK).body(
             todoService.getTodoById(id).orElseThrow(
                     () -> new TodoNotFoundException("Could not found todo with  the id: " + id + ".")
@@ -61,10 +61,8 @@ public class TodoController {
     todoService.deleteTodo(id);
   }
 
-  //@TODO fix methode
   @GetMapping("/search")
   public ResponseEntity<List<Todo>> getTodosByStatus(@RequestParam TodoStatus status) {
     return ResponseEntity.ok(todoService.getAlTodosByStatus(status));
   }
-
 }
