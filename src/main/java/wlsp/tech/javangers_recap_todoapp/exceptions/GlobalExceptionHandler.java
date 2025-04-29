@@ -18,7 +18,7 @@ public class GlobalExceptionHandler {
   }
 
   @ExceptionHandler(Exception.class)
-  public ResponseEntity<ErrorResponse> handleGeneralExecption(Exception e) {
+  public ResponseEntity<ErrorResponse> handleGeneralException(Exception e) {
     ErrorResponse errorResponse = new ErrorResponse(
             LocalDateTime.now(),
             HttpStatus.INTERNAL_SERVER_ERROR.value(),

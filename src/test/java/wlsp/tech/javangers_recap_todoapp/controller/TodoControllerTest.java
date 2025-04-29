@@ -1,13 +1,19 @@
 package wlsp.tech.javangers_recap_todoapp.controller;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.client.AutoConfigureMockRestServiceServer;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
+import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.web.client.MockRestServiceServer;
 import org.springframework.test.web.servlet.MockMvc;
 
+import static org.springframework.test.web.client.match.MockRestRequestMatchers.method;
+import static org.springframework.test.web.client.match.MockRestRequestMatchers.requestTo;
+import static org.springframework.test.web.client.response.MockRestResponseCreators.withSuccess;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -15,24 +21,22 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import wlsp.tech.javangers_recap_todoapp.model.Enum.TodoStatus;
 import wlsp.tech.javangers_recap_todoapp.model.Todo;
 import wlsp.tech.javangers_recap_todoapp.repository.TodoRepository;
-import wlsp.tech.javangers_recap_todoapp.service.ChatGPTService;
 
-@SpringBootTest(properties = {
-        "OPEN_AI_URI=https://dummy-openai-url.com",
-        "OPEN_AI_KEY=dummy-key"
-})
+@SuppressWarnings("SpringBootApplicationProperties")
+@SpringBootTest(properties = { "OPEN_AI_URI=https://api.openai.com", "OPEN_AI_KEY=12345" })
 @AutoConfigureMockMvc
+@AutoConfigureMockRestServiceServer
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 class TodoControllerTest {
-  @Autowired
-  private MockMvc mockMvc;
 
-  @Autowired
-  private TodoRepository todoRepository;
+@Autowired
+private MockMvc mockMvc;
 
-  @BeforeEach
-  void setUp() {
-    todoRepository.deleteAll();
-  }
+@Autowired
+private MockRestServiceServer mockRestServiceServer;
+
+@Autowired
+private TodoRepository todoRepository;
 
   @Test
   void getAllTodos_shouldReturnListWIthTodos_whenCalled() throws Exception {
@@ -88,6 +92,20 @@ class TodoControllerTest {
 
   @Test
   void addTodo_shouldAddTodo_whenCalledWithValidData() throws Exception {
+    mockRestServiceServer.expect(requestTo("https://api.openai.com/v1/chat/completions"))
+            .andExpect(method(HttpMethod.POST))
+            .andRespond(withSuccess("""
+                      {
+                       "choices": [
+                                   {
+                                     "message": {
+                                       "content": "desc"
+                                     }
+                                   }
+                                ]
+                      }
+                    """, MediaType.APPLICATION_JSON));
+
     mockMvc.perform(post("/api/todo")
                     .contentType(MediaType.APPLICATION_JSON)
                     .content("""

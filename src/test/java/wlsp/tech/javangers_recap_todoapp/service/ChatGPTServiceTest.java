@@ -2,24 +2,24 @@ package wlsp.tech.javangers_recap_todoapp.service;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.client.AutoConfigureMockRestServiceServer;
 import org.springframework.boot.test.autoconfigure.web.client.RestClientTest;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.client.MockRestServiceServer;
 
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.springframework.test.web.client.match.MockRestRequestMatchers.method;
-import static org.springframework.test.web.client.match.MockRestRequestMatchers.requestTo;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.springframework.test.web.client.match.MockRestRequestMatchers.*;
 import static org.springframework.test.web.client.response.MockRestResponseCreators.withSuccess;
 
 @RestClientTest(ChatGPTService.class)
+@SuppressWarnings("SpringBootApplicationProperties")
+@TestPropertySource(properties = {"OPEN_AI_URI=https://api.dummy-api.com", "OPEN_AI_KEY=dummy-api-key"})
 @AutoConfigureMockRestServiceServer
-@TestPropertySource(properties = {
-        "OPEN_AI_URI=https://api.openai.com",
-        "OPEN_AI_KEY=dummy-api-key"
-})
+@ActiveProfiles("test")
 class ChatGPTServiceTest {
 
   @Autowired
@@ -28,35 +28,33 @@ class ChatGPTServiceTest {
   @Autowired
   private MockRestServiceServer mockServer;
 
+  @Value("${OPEN_AI_URI}")
+  private String OPEN_AI_URI;
+
   @Test
-  void checkSpelling_shouldReturnCorrectedSentence_whenSpellCheckingIsCalled() {
-    // GIVEN
-    String correctedText = "This is the text.";
-
-    String openAiResponseJson = """
+  void checkSpelling_shouldReturnCorrectedSentence() {
+    String expectedText = "This is the text.";
+    String responseJson = """
+            {
+              "choices": [
                 {
-                  "choices": [
-                    {
-                      "message": {
-                        "role": "assistant",
-                        "content": "%s"
-                      }
-                    }
-                  ]
+                  "message": {
+                    "role": "assistant",
+                    "content": "%s"
+                  }
                 }
-                """.formatted(correctedText);
+              ]
+            }
+            """.formatted(expectedText);
 
-    mockServer.expect(requestTo("https://api.openai.com/v1/chat/completions"))
+    mockServer.expect(requestTo(OPEN_AI_URI + "/v1/chat/completions"))
             .andExpect(method(HttpMethod.POST))
-            .andRespond(withSuccess(openAiResponseJson, MediaType.APPLICATION_JSON));
+            .andExpect(header("Authorization", "Bearer dummy-api-key"))
+            .andRespond(withSuccess(responseJson, MediaType.APPLICATION_JSON));
 
-    // WHEN
     String result = chatGPTService.checkSpelling("Ths is teh text.");
 
-    // THEN
-    assertThat(result).isEqualTo(correctedText);
-
+    assertThat(result).isEqualTo(expectedText);
     mockServer.verify();
   }
-
 }
